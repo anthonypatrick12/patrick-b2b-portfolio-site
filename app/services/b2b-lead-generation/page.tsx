@@ -9,6 +9,16 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.url },
+      { "@type": "ListItem", position: 2, name: "Services", item: site.url + "/services" },
+      { "@type": "ListItem", position: 3, name: "B2B Lead Generation", item: site.url + "/services/b2b-lead-generation" },
+    ],
+  };
+
   return (
     <main className="pt-28 pb-20">
       <div className="container">
@@ -19,8 +29,8 @@ export default function Page() {
 
         <h1 className="text-3xl md:text-5xl font-semibold">B2B Lead Generation</h1>
         <p className="mt-4 text-white/70 max-w-3xl">
-          Full-funnel outbound to create qualified pipeline. We combine ICP research, compliant list building,
-          and multi-channel outreach to consistently book meetings with budget owners.
+          Full-funnel outbound to create qualified pipeline. We combine ICP research, compliant list building, and
+          multi-channel outreach to consistently book meetings with budget owners.
         </p>
 
         <section className="mt-10 card p-6">
@@ -33,24 +43,16 @@ export default function Page() {
           </ul>
         </section>
 
-        <a href="/#contact" className="inline-block mt-8 px-6 py-3 rounded-2xl bg-brand-500 hover:bg-brand-400 text-white shadow-glow">
+        <a
+          href="/#contact"
+          className="inline-block mt-8 px-6 py-3 rounded-2xl bg-brand-500 hover:bg-brand-400 text-white shadow-glow"
+        >
           Book a Discovery Call
         </a>
 
         <script
           type="application/ld+json"
-          // @ts-expect-error: JSON string for LD+JSON
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "BreadcrumbList",
-              "itemListElement": [
-                { "@type": "ListItem", position: 1, name: "Home", item: site.url },
-                { "@type": "ListItem", position: 2, name: "Services", item: site.url + "/services" },
-                { "@type": "ListItem", position: 3, name: "B2B Lead Generation", item: site.url + "/services/b2b-lead-generation" }
-              ]
-            }),
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
         />
       </div>
     </main>
