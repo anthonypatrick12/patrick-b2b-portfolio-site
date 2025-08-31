@@ -1,9 +1,10 @@
+// components/chat/ChatWidget.tsx
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { getReply, type ChatMessage } from "./RuleEngine";
 
-/** —— Tiny design config (tweak if you want) —— */
+/** ——— Minimal styling knobs ——— */
 const CFG = {
   bubbleBg: "bg-white/5",               // bot bubble
   bubbleBorder: "border-white/10",
@@ -14,26 +15,46 @@ const CFG = {
   radius: "rounded-2xl",
   ring: "focus:outline-none focus:ring-2 focus:ring-white/30",
   z: "z-40",
+  width: "max-w-[360px]",               // panel max width
 };
 
-const LS_KEY = "patrick-chat-history-v1";
+const LS_CHAT = "patrick-chat-history-v1";
+const LS_SEEN = "patrick-chat-has-seen-v1";
 
 /** Persist chat locally (no server) */
 function useChatHistory() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(LS_KEY);
+      const raw = localStorage.getItem(LS_CHAT);
       if (raw) setMessages(JSON.parse(raw));
     } catch {}
   }, []);
   useEffect(() => {
     try {
-      localStorage.setItem(LS_KEY, JSON.stringify(messages));
+      localStorage.setItem(LS_CHAT, JSON.stringify(messages));
     } catch {}
   }, [messages]);
   return { messages, setMessages };
 }
+
+/** Simple robot logo (SVG) */
+const BotLogo: React.FC<{ className?: string }> = ({ className }) => (
+  <svg
+    className={className}
+    viewBox="0 0 64 64"
+    fill="none"
+    aria-hidden="true"
+  >
+    <rect x="10" y="16" width="44" height="34" rx="12" fill="currentColor" />
+    <circle cx="24" cy="33" r="5" fill="black" />
+    <circle cx="40" cy="33" r="5" fill="black" />
+    <rect x="28" y="8" width="8" height="8" rx="2" fill="currentColor" />
+    <rect x="6" y="26" width="8" height="12" rx="2" fill="currentColor" />
+    <rect x="50" y="26" width="8" height="12" rx="2" fill="currentColor" />
+    <rect x="22" y="44" width="20" height="3" rx="1.5" fill="black" />
+  </svg>
+);
 
 const Bubble: React.FC<{ role: "user" | "bot"; children: React.ReactNode }> = ({ role, children }) => (
   <div className={`flex ${role === "user" ? "justify-end" : "justify-start"} my-1`}>
@@ -59,23 +80,38 @@ export default function ChatWidget() {
   const { messages, setMessages } = useChatHistory();
   const listRef = useRef<HTMLDivElement>(null);
 
-  // Welcome only once
+  // Seed + first-visit auto-open
   useEffect(() => {
-    if (messages.length === 0) {
+    const hasSeed = messages.length > 0;
+    const seen = typeof window !== "undefined" ? localStorage.getItem(LS_SEEN) : "1";
+
+    if (!hasSeed) {
+      // Seed two messages: intro + explicit “Hi, how can I help you?”
       setMessages([
         {
           id: crypto.randomUUID(),
           role: "bot",
-          text:
-            "Hi! I’m Patrick’s assistant. Ask about services, pricing, or type ‘book’ to schedule a call.",
+          text: "Hi! I’m Patrick’s assistant.",
+          ts: Date.now(),
+        },
+        {
+          id: crypto.randomUUID(),
+          role: "bot",
+          text: "Hi, how can I help you?",
           ts: Date.now(),
         },
       ]);
     }
+
+    // Auto-open only on first visit
+    if (!seen) {
+      setOpen(true);
+      localStorage.setItem(LS_SEEN, "1");
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Auto-scroll
+  // Auto-scroll to bottom when messages change
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
   }, [messages]);
@@ -88,7 +124,7 @@ export default function ChatWidget() {
     const userMsg: ChatMessage = { id: crypto.randomUUID(), role: "user", text: trimmed, ts: Date.now() };
     setMessages((m) => [...m, userMsg]);
 
-    // Lead capture
+    // Lead capture flow
     if (collecting === "name") {
       setLead((prev) => ({ ...prev, name: trimmed }));
       setCollecting("email");
@@ -103,17 +139,12 @@ export default function ChatWidget() {
       setCollecting(null);
       setMessages((m) => [
         ...m,
-        {
-          id: crypto.randomUUID(),
-          role: "bot",
-          text: "Thanks — I’ll pass this along. You can also book at /#contact.",
-          ts: Date.now(),
-        },
+        { id: crypto.randomUUID(), role: "bot", text: "Thanks — I’ll pass this along. You can also book at /#contact.", ts: Date.now() },
       ]);
       return;
     }
 
-    // Rule reply
+    // Rule engine reply
     const { reply, suggestions } = getReply(trimmed, { lead });
     setMessages((m) => [...m, { id: crypto.randomUUID(), role: "bot", text: reply, ts: Date.now() }]);
 
@@ -126,7 +157,7 @@ export default function ChatWidget() {
       ]);
     }
 
-    // ONE compact suggestion line (not chips)
+    // Compact suggestion (one line)
     if (suggestions?.length) {
       const compact = suggestions.slice(0, 2).join(" · ");
       setMessages((m) => [
@@ -140,7 +171,7 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* Floating button (simple, subtle) */}
+      {/* Floating launcher with cool robot logo */}
       <button
         aria-label={open ? "Close chat" : "Open chat"}
         onClick={() => setOpen((v) => !v)}
@@ -155,14 +186,15 @@ export default function ChatWidget() {
         ].join(" ")}
         style={{ lineHeight: 1 }}
       >
-        {open ? "×" : "💬"}
+        {open ? "×" : <BotLogo className="w-6 h-6" />}
       </button>
 
       {/* Panel */}
       {open && (
         <div
           className={[
-            "fixed bottom-20 right-5 w-[92vw] max-w-[360px]",
+            "fixed bottom-20 right-5 w-[92vw]",
+            CFG.width,
             CFG.z,
             CFG.panelBg,
             CFG.radius,
@@ -173,7 +205,10 @@ export default function ChatWidget() {
         >
           {/* Header */}
           <div className="px-3 py-2 border-b border-white/10 flex items-center justify-between">
-            <div className="text-xs text-white/80">Patrick’s Assistant</div>
+            <div className="flex items-center gap-2 text-xs text-white/85">
+              <BotLogo className="w-4 h-4 text-white/90" />
+              <span>Patrick’s Assistant</span>
+            </div>
             <div className="flex gap-2">
               {quicks.map((q) => (
                 <button
