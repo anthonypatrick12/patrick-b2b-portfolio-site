@@ -3,16 +3,15 @@ import Image from "next/image";
 import React from "react";
 
 const CLIENTS = [
-  { name: "Mimecast", file: "mimecast.svg" },
-  { name: "Juniper Networks", file: "juniper-networks.svg" },
-  { name: "Cisco", file: "cisco.svg" },
-  { name: "Dell", file: "dell.svg" },
-  { name: "SAP", file: "sap.svg" },
-  { name: "Microsoft", file: "microsoft.svg" },
-  { name: "ON24", file: "on24.svg" },
-  { name: "JFrog", file: "jfrog.svg" },
-  { name: "ITWC", file: "itwc.svg" },
-  { name: "MongoDB", file: "mongodb.svg" },
+  { name: "Mimecast", file: "Mimecast.png" },
+  { name: "Juniper Networks", file: "Juniper.png" },
+  { name: "Cisco", file: "Cisco.png" },
+  { name: "Dell", file: "Dell.png" },
+  { name: "SAP", file: "SAP.png" },
+  { name: "Microsoft", file: "Microsoft.png" },
+  { name: "ON24", file: "ON24.png" },
+  { name: "JFrog", file: "Jfrog.svg" },
+  { name: "MongoDB", file: "MongoDB.svg" },
 ];
 
 function Row() {
