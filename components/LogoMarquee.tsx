@@ -3,27 +3,19 @@ import Image from "next/image";
 import React from "react";
 
 /**
- * Uses your files under /public/logos with exact names (case-sensitive):
- *  - Cisco.png
- *  - Dell.png
- *  - Microsoft.png
- *  - MongoDB.svg
- *  - Jfrog.svg
- *  - Juniper.png
- *  - ON24.png
- *  - SAP.png
- *  - Mimecast.png
+ * Looks in /public/logos with LOWERCASE filenames.
+ * If you change a filename, update it here too.
  */
 const CLIENTS = [
-  { name: "Mimecast", file: "Mimecast.png" },
-  { name: "Juniper Networks", file: "Juniper.png" },
-  { name: "Cisco", file: "Cisco.png" },
-  { name: "Dell", file: "Dell.png" },
-  { name: "SAP", file: "SAP.png" },
-  { name: "Microsoft", file: "Microsoft.png" },
-  { name: "ON24", file: "ON24.png" },
-  { name: "JFrog", file: "Jfrog.svg" },
-  { name: "MongoDB", file: "MongoDB.svg" },
+  { name: "Mimecast",   file: "mimecast.png"  },
+  { name: "Juniper",    file: "juniper.png"   },
+  { name: "Cisco",      file: "cisco.png"     },
+  { name: "Dell",       file: "dell.png"      },
+  { name: "SAP",        file: "sap.png"       },
+  { name: "Microsoft",  file: "microsoft.png" },
+  { name: "ON24",       file: "on24.png"      },
+  { name: "JFrog",      file: "jfrog.svg"     },
+  { name: "MongoDB",    file: "mongodb.svg"   },
 ];
 
 function Row() {
@@ -47,11 +39,7 @@ function Row() {
 
 export default function LogoMarquee({ className = "" }: { className?: string }) {
   return (
-    <div
-      className={`relative w-full overflow-hidden ${className}`}
-      aria-label="Trusted by"
-      role="region"
-    >
+    <div className={`relative w-full overflow-hidden ${className}`} aria-label="Trusted by" role="region">
       <div className="marquee-track flex gap-10">
         <Row />
         <Row /> {/* duplicate for seamless loop */}
