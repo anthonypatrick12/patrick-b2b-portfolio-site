@@ -1,73 +1,87 @@
-// components/LogoMarquee.tsx
-"use client";
+// app/page.tsx
+import Link from "next/link";
+import LogoMarquee from "@/components/LogoMarquee";
 
-import Image from "next/image";
-import React from "react";
-
-/**
- * Uses your files under /public/logos with exact names (case-sensitive):
- *  - Cisco.png, Dell.png, Microsoft.png, MongoDB.svg, Jfrog.svg,
- *    Juniper.png, ON24.png, SAP.png, Mimecast.png
- */
-const CLIENTS = [
-  { name: "Mimecast", file: "Mimecast.png" },
-  { name: "Juniper Networks", file: "Juniper.png" },
-  { name: "Cisco", file: "Cisco.png" },
-  { name: "Dell", file: "Dell.png" },
-  { name: "SAP", file: "SAP.png" },
-  { name: "Microsoft", file: "Microsoft.png" },
-  { name: "ON24", file: "ON24.png" },
-  { name: "JFrog", file: "Jfrog.svg" },
-  { name: "MongoDB", file: "MongoDB.svg" },
-];
-
-function Row() {
+export default function HomePage() {
   return (
-    <ul className="flex items-center gap-10 pr-10">
-      {CLIENTS.map((c) => (
-        <li key={c.name} className="shrink-0">
-          <Image
-            src={`/logos/${c.file}`}
-            alt={`${c.name} logo`}
-            width={160}
-            height={40}
-            className="h-10 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity duration-200 grayscale hover:grayscale-0"
-            sizes="(max-width: 768px) 50vw, 400px"
-          />
-        </li>
-      ))}
-    </ul>
-  );
-}
+    <main className="pt-28 pb-20">
+      {/* HERO */}
+      <section className="container">
+        <div className="max-w-3xl">
+          <h1 className="text-4xl md:text-6xl font-semibold leading-tight">
+            Build Predictable B2B Pipeline — Without Burning Your Domain
+          </h1>
+          <p className="mt-4 text-white/70">
+            For Seed–Series B SaaS &amp; B2B Services (NA &amp; EU). Compliant, multi-channel
+            outbound: ICP research, data enrichment, SDR-as-a-Service, and appointment setting.
+          </p>
 
-export default function LogoMarquee({ className = "" }: { className?: string }) {
-  return (
-    <div
-      className={`relative w-full overflow-hidden ${className}`}
-      aria-label="Trusted by"
-      role="region"
-    >
-      <div className="track flex gap-10">
-        <Row />
-        <Row /> {/* duplicate for seamless loop */}
-      </div>
+          <div className="mt-8 flex gap-3">
+            <Link
+              href="/#contact"
+              className="px-6 py-3 rounded-2xl bg-brand-500 hover:bg-brand-400 text-white shadow-glow border border-white/10"
+            >
+              Book a Discovery Call
+            </Link>
+            <Link
+              href="/services"
+              className="px-6 py-3 rounded-2xl border border-white/15 text-white/90 hover:bg-white/5"
+            >
+              See Services
+            </Link>
+          </div>
 
-      {/* self-contained animation */}
-      <style jsx>{`
-        .track {
-          width: max-content;
-          animation: marquee 28s linear infinite;
-          will-change: transform;
-        }
-        @keyframes marquee {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-      `}</style>
-    </div>
+          {/* LOGO MARQUEE */}
+          <div className="mt-12">
+            <p className="text-white/60 text-sm mb-4">Trusted by teams at</p>
+            <LogoMarquee />
+          </div>
+        </div>
+      </section>
+
+      {/* ======= REPLACE THESE STUBS WITH YOUR REAL SECTIONS ======= */}
+      <section className="container mt-24">
+        <h2 className="text-2xl font-semibold mb-4">Services</h2>
+        <p className="text-white/70">
+          (Replace this with your real Services section component.)
+        </p>
+      </section>
+
+      <section className="container mt-24">
+        <h2 className="text-2xl font-semibold mb-4">Process</h2>
+        <p className="text-white/70">
+          (Replace with your real Process / How it works.)
+        </p>
+      </section>
+
+      <section className="container mt-24">
+        <h2 className="text-2xl font-semibold mb-4">Case Studies</h2>
+        <p className="text-white/70">
+          (Replace with your Case Studies component.)
+        </p>
+      </section>
+
+      <section className="container mt-24">
+        <h2 className="text-2xl font-semibold mb-4">Testimonials</h2>
+        <p className="text-white/70">
+          (Replace with your Testimonials slider.)
+        </p>
+      </section>
+
+      <section className="container mt-24">
+        <h2 className="text-2xl font-semibold mb-4">About</h2>
+        <p className="text-white/70">
+          (Replace with your About section.)
+        </p>
+      </section>
+
+      {/* CONTACT — ensure this id exists for /#contact links */}
+      <section id="contact" className="container mt-24">
+        <h2 className="text-2xl font-semibold mb-4">Contact</h2>
+        <p className="text-white/70">
+          (Replace with your real Contact form / Calendly embed.)
+        </p>
+      </section>
+    </main>
   );
 }
