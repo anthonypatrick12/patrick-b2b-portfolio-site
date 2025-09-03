@@ -28,3 +28,21 @@ body {
   background-color: rgba(13,19,32,0.8);
   background-color: color-mix(in srgb, var(--card) 80%, transparent);
 }
+/* ===========================
+   Logo Marquee Animation
+   =========================== */
+.marquee-track {
+  width: max-content;
+  animation: marquee 28s linear infinite;
+  will-change: transform;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
